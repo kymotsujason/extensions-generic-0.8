@@ -15929,14 +15929,9 @@ var _Sources = (() => {
           }));
         }
       }
-      const items = await this.parser.parseHomeSection($2, this);
-      let mData = { page: page + 1 };
-      if (items.length < 18) {
-        mData = void 0;
-      }
       return App.createPagedResults({
         results: manga,
-        metadata: mData
+        metadata: void 0
       });
     }
     async getHomePageSections(sectionCallback) {
