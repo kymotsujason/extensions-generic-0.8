@@ -3081,7 +3081,9 @@ var _Sources = (() => {
         return node;
       }
       if (recurse && hasChildren(node) && node.children.length > 0) {
-        return findOne(test, node.children, true);
+        const found = findOne(test, node.children, true);
+        if (found)
+          return found;
       }
     }
     return null;
@@ -15655,7 +15657,7 @@ var _Sources = (() => {
   };
 
   // src/Madara.ts
-  var BASE_VERSION = "3.2.1";
+  var BASE_VERSION = "3.2.2";
   var getExportVersion = (EXTENSION_VERSION) => {
     return BASE_VERSION.split(".").map((x, index2) => Number(x) + Number(EXTENSION_VERSION.split(".")[index2])).join(".");
   };
@@ -15927,9 +15929,14 @@ var _Sources = (() => {
           }));
         }
       }
+      const items = await this.parser.parseHomeSection($2, this);
+      let mData = { page: page + 1 };
+      if (items.length < 50) {
+        mData = void 0;
+      }
       return App.createPagedResults({
         results: manga,
-        metadata: { page: page + 1 }
+        metadata: mData
       });
     }
     async getHomePageSections(sectionCallback) {
