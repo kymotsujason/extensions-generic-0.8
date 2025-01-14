@@ -2,6 +2,7 @@ import {
     Chapter,
     ChapterDetails,
     PartialSourceManga,
+    SearchRequest,
     SourceManga,
     Tag,
     TagSection
@@ -11,9 +12,11 @@ import { decodeHTML } from 'entities'
 
 import { MangaBox } from './MangaBox'
 
+import { relevanceScore } from './RelevanceScore'
+
 export class MangaBoxParser {
-    parseManga = ($: CheerioStatic, source: MangaBox): PartialSourceManga[] => {
-        const mangaItems: PartialSourceManga[] = []
+    parseManga = ($: CheerioStatic, source: MangaBox, query?: SearchRequest): PartialSourceManga[] => {
+        const mangaItems: { manga: PartialSourceManga; relevance: number }[] = []
         const collecedIds: string[] = []
 
         for (const manga of $(source.mangaListSelector).toArray()) {
@@ -23,16 +26,27 @@ export class MangaBoxParser {
             const subtitle = $(source.mangaSubtitleSelector, manga).first().text().trim() ?? ''
 
             if (!mangaId || !title || collecedIds.includes(mangaId)) continue
-            mangaItems.push(App.createPartialSourceManga({
+            collecedIds.push(mangaId)
+            const partialManga = App.createPartialSourceManga({
                 mangaId: mangaId,
                 image: image,
                 title: title,
                 subtitle: subtitle ? subtitle : 'No Chapters'
-            }))
-            collecedIds.push(mangaId)
+            })
+
+            let relevance = 0
+            if (query?.title) {
+                relevance = relevanceScore(title, query.title)
+            }
+
+            mangaItems.push({
+                manga: partialManga,
+                relevance: relevance
+            })
         }
 
-        return mangaItems
+    mangaItems.sort((a, b) => b.relevance - a.relevance)
+    return mangaItems.map((r) => r.manga)
     }
 
     parseMangaDetails = ($: CheerioStatic, mangaId: string, source: MangaBox): SourceManga => {

@@ -25,7 +25,7 @@ import {
     getImageServer
 } from './MangaBoxSettings'
 
-const BASE_VERSION = '4.0.2'
+const BASE_VERSION = '4.0.3'
 export const getExportVersion = (EXTENSION_VERSION: string): string => {
     return BASE_VERSION.split('.').map((x, index) => Number(x) + Number(EXTENSION_VERSION.split('.')[index])).join('.')
 }
@@ -291,7 +291,7 @@ export abstract class MangaBox implements SearchResultsProviding, MangaProviding
 
         const response = await this.requestManager.schedule(request, 1)
         const $ = this.cheerio.load(response.data as string)
-        const results = this.parser.parseManga($, this)
+        const results = this.parser.parseManga($, this, query)
 
         metadata = !this.parser.isLastPage($) ? { page: page + 1 } : undefined
         return App.createPagedResults({

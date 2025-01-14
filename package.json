@@ -25,7 +25,9 @@
     "@paperback/types": "^0.8.0-alpha.47",
     "cheerio": "^1.0.0-rc.12",
     "entities": "^4.4.0",
+    "fast-levenshtein": "^3.0.0",
     "nodemon": "^2.0.22",
+    "stemmer": "^2.0.1",
     "ts-node": "^10.2.1"
   }
 }
