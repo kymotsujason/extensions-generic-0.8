@@ -15931,7 +15931,7 @@ var _Sources = (() => {
       }
       const items = await this.parser.parseHomeSection($2, this);
       let mData = { page: page + 1 };
-      if (items.length < 20) {
+      if (items.length < 18) {
         mData = void 0;
       }
       return App.createPagedResults({
